@@ -60,7 +60,7 @@ jobs:
       - name: Package tests (host)
         working-directory: ${{ runner.temp }}/project/ios/Packages/AppCore
         run: swift test
-      - name: App tests on the iOS Simulator (hosted: Keychain, configuration, wiring)
+      - name: "App tests on the iOS Simulator (hosted: Keychain, configuration, wiring)"
         working-directory: ${{ runner.temp }}/project/ios
         run: |
           xcrun simctl boot "$(sh scripts/simulator.sh)" || true
