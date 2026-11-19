@@ -1,0 +1,8 @@
+#include "Shared.xcconfig"
+
+// The Debug build talks to the local development server over http. Info-Debug.plist is the ONLY place that
+// permits cleartext, and only for local addresses (NSAllowsLocalNetworking), never for the internet.
+// (A URL cannot be written here: "//" starts a comment in an xcconfig, so scheme and host are separate.)
+API_SCHEME = http
+API_HOST = localhost:{{ debug_api_port }}
+INFOPLIST_FILE = Config/Info-Debug.plist

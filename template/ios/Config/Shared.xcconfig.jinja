@@ -1,0 +1,24 @@
+// Settings shared by Debug and Release. Edit the values; the project file does not change.
+// (This file is rendered once from the template's answers; edit it freely afterwards.)
+
+APP_DISPLAY_NAME = {{ app_display_name }}
+PRODUCT_BUNDLE_IDENTIFIER_BASE = {{ bundle_identifier }}
+PRODUCT_BUNDLE_IDENTIFIER = $(PRODUCT_BUNDLE_IDENTIFIER_BASE)
+
+MARKETING_VERSION = 0.1.0
+CURRENT_PROJECT_VERSION = 1
+
+// Deliberate minimum: iOS 17 (SwiftUI's @Observable, NavigationStack and ContentUnavailableView). Raise it, do
+// not lower it without replacing those.
+IPHONEOS_DEPLOYMENT_TARGET = 17.0
+SDKROOT = iphoneos
+TARGETED_DEVICE_FAMILY = 1,2
+SUPPORTED_PLATFORMS = iphoneos iphonesimulator
+
+SWIFT_VERSION = 6.0
+SWIFT_STRICT_CONCURRENCY = complete
+ENABLE_USER_SCRIPT_SANDBOXING = YES
+
+// No development team is set: the simulator needs none. To run on a device, choose your team in Xcode
+// (Signing & Capabilities) on your own machine; that choice is stored in your user data, never committed.
+CODE_SIGN_STYLE = Automatic
