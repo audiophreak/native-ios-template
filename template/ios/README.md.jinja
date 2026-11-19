@@ -59,5 +59,18 @@ bundle identifier in `Config/Shared.xcconfig` first.
 
 ## Upgrading
 
-This layer is upgraded on its own (`devkit upgrade-native`, or `copier update --answers-file .copier-answers.ios.yml`
-from the project root); the web part upgrades separately. Both need a clean git working tree.
+This project has two template layers, each upgraded on its own: the web part (`.copier-answers.yml`) and this iOS layer
+(`.copier-answers.ios.yml`). With the platform CLI, from the `developer-platform` checkout:
+
+```sh
+devkit status PROJECT                                 # both layers, their releases and what is newer
+devkit upgrade PROJECT --layer native --dry-run       # preview
+devkit upgrade PROJECT --layer native                 # review, test and commit it before the next upgrade
+devkit upgrade PROJECT --layer web --dry-run
+```
+
+`devkit upgrade` refuses a project with both layers unless `--layer` names one, and refuses a step that would leave
+the two layers on releases that do not belong together (it says which layer to upgrade first). Each upgrade needs a clean git working tree (nothing modified, nothing untracked); build
+products and logs of the scripts here stay in ignored directories. Without the CLI, from the project root:
+`copier update --answers-file .copier-answers.ios.yml --vcs-ref vX.Y.Z --defaults --skip-answered` (the answers file
+is required: without it Copier would update the web part).
