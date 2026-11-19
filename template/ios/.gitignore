@@ -1,0 +1,14 @@
+# Xcode and SwiftPM build products and per-user state (the project itself is committed)
+DerivedData/
+build/
+.build/
+.swiftpm/
+*.xcresult
+xcuserdata/
+*.xcuserstate
+.DS_Store
+# Local, per-developer signing choices never belong in the repository
+*.mobileprovision
+*.p12
+*.cer
+.derived-data/

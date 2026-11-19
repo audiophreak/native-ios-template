@@ -1,0 +1,7 @@
+#include "Shared.xcconfig"
+
+// The Release build requires https: Info-Release.plist has no App Transport Security exception, so the
+// system's default (https only, valid certificates) applies. Set the real host before shipping.
+API_SCHEME = https
+API_HOST = {{ release_api_host }}
+INFOPLIST_FILE = Config/Info-Release.plist

@@ -5,3 +5,8 @@ __pycache__/
 .pytest_cache/
 DerivedData/
 *.xcresult
+.build/
+.derived-data/
+.derived-data-release.log
+xcuserdata/
+.swiftpm/

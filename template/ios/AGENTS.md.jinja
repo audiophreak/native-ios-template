@@ -1,0 +1,47 @@
+# iOS app rules ({{ app_display_name }})
+
+This directory is the native iOS layer of the project. It comes from the separate **native-ios-template**
+(answers: `../.copier-answers.ios.yml`), not from the web template: `../.copier-answers.yml` belongs to the web
+part, and neither layer rewrites the other's files. Do not edit the web application from here. The web part's rules
+are in `../AGENTS.md`.
+
+## What is here
+
+- `App/`: the SwiftUI app (views only; Xcode "synchronized folder", so a new file in it is in the target).
+- `Packages/AppCore/`: everything that is not user interface, as a local Swift package.
+  - `Sources/APIClient/`: the **generated** typed client. Never edit it by hand.
+  - `Sources/AppCore/`: configuration, authentication, Keychain storage, the bearer middleware, the API service and
+    the observable models (`AppModel`, `ItemsModel`).
+- `AppTests/`: tests hosted inside the app (the Keychain, the app's wiring, the build configuration, the end-to-end
+  scenario). `Packages/AppCore/Tests/`: everything else, with a stand-in server (no network).
+- `Contract/`: a copy of the web project's OpenAPI contract and its checksum. `Tools/Generator/`: the pinned code generator.
+- `Config/*.xcconfig` and the two `Info-*.plist`: names, bundle identifier, API address, deployment target.
+  The Xcode project itself is static; change settings here, not in the project.
+
+## Commands (from `ios/`)
+
+- `sh scripts/test.sh` runs the app's tests and the package tests on the iOS Simulator (`IOS_SIMULATOR` picks one).
+  `sh scripts/test.sh direct` runs the package tests with the simulator's own `xctest` if Xcode's test runner hangs.
+- `sh scripts/check-generated.sh`: regenerates the client into a temporary directory and requires zero difference.
+- `sh scripts/sync-contract.sh`: copies `../openapi/openapi.json` here and regenerates the client. Run it whenever the
+  web API changed (after `npm run openapi:generate` there), then commit `Contract/` and the generated client together.
+- `sh scripts/check-contract.sh`, `sh scripts/check-static.sh`, `sh scripts/check-release-config.sh`.
+- `node scripts/e2e.mjs`: the real scenario (web server, database, Better Auth, simulator). See `README.md`.
+
+## Rules
+
+- **The contract is the web project's.** Never hand-write request or response types; change the API in the web part,
+  regenerate its contract, sync, regenerate the client. Unknown response fields are ignored; problem `code`s are strings.
+- **The session token is a credential.** It lives in the Keychain only (`KeychainTokenStore`, unlocked-only, this
+  device only, not synchronised). Never put it in UserDefaults, a file, a log, a URL, an error message or a view. Never
+  store the password: it is a parameter of one request.
+- **Transport.** Release is https only and has no App Transport Security exception; Debug may use cleartext to a local
+  address (`NSAllowsLocalNetworking`) and nothing else. Never add `NSAllowsArbitraryLoads`, never disable or pin
+  certificate validation, never add a redirect-following session. The API address comes from `Config/*.xcconfig`.
+- **Authentication state** changes only through `AuthState.reduced(by:)`. A confirmed 401 (a problem document on a request
+  that carried the token) removes the token and signs the app out; other errors do not.
+- **Swift 6, strict concurrency**, `async`/`await`, the Observation framework. No third-party state-management library;
+  new dependencies need approval, an exact pin and a release at least two weeks old (also for what they pull in).
+- **No signing identity, team identifier or provisioning profile is committed.** Device signing is chosen in Xcode on
+  your own machine.
+- Every behaviour change needs a test; do not weaken a test to make it pass.
