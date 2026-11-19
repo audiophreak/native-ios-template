@@ -12,17 +12,18 @@ Release requires https.
 
 ## Use it
 
-Normally through the platform CLI (`devkit new NAME --profile native-ios --database postgres`, or `devkit native add PATH`
+Normally through the platform CLI (`devkit new NAME --profile native-ios --set database=postgres`, or `devkit native add PROJECT`
 on an existing full-stack project). By hand, from the web project's root, with a clean git tree:
 
 ```sh
 copier copy gh:audiophreak/native-ios-template . --vcs-ref vX.Y.Z --data app_name=my-app
 ```
 
-Upgrade it separately from the web part (note the answers file, which is not Copier's default):
+Upgrade it separately from the web part: `devkit upgrade PROJECT --layer native` (`devkit status PROJECT` shows both
+layers), or by hand (note the answers file, which is not Copier's default):
 
 ```sh
-copier update --answers-file .copier-answers.ios.yml --vcs-ref vX.Y.Z
+copier update --answers-file .copier-answers.ios.yml --vcs-ref vX.Y.Z --defaults --skip-answered
 ```
 
 ## Questions

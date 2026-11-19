@@ -2,6 +2,28 @@
 
 Versions are git tags (`vMAJOR.MINOR.PATCH`). In 0.x, a minor bump may be breaking.
 
+## 0.1.1
+
+Corrective patch. Two files change in generated projects (`ios/README.md`, `ios/scripts/check-release-config.sh`); the
+contract, the generated client, the Swift sources, the Xcode project, the configuration and every dependency are
+byte-identical to 0.1.0. Still for `web-core-template` 0.7.x; devkit 0.8.0 supports it unchanged (native range
+`>=0.1.0,<0.2.0`).
+
+- **`ios/README.md` named a devkit command that does not exist.** The upgrade section now shows the layered workflow of
+  devkit 0.8.0: `devkit status PROJECT`, `devkit upgrade PROJECT --layer native` and `--layer web` (with `--dry-run`),
+  one layer at a time from a clean tree, and the raw `copier update` equivalent with its required answers file. The
+  repository README's `devkit new` example used a non-existent `--database` option; it is `--set database=postgres`.
+- **`ios/scripts/check-release-config.sh` left an untracked file.** Its build log was written to
+  `ios/.derived-data-release.log`, which no `.gitignore` covers, so running the check made a committed project's tree
+  dirty and a following `devkit upgrade` (or `copier update`) refused it. The log is now `ios/.derived-data/release.log`,
+  inside the already ignored build area; on failure its last 30 lines are shown as before and its path is named.
+  Existing projects: remove a leftover `ios/.derived-data-release.log` before upgrading (the upgrade itself needs a
+  clean tree).
+- Tests: `tests/test_docs_commands.py` checks every devkit command in the rendered and repository documentation against
+  the devkit 0.8.0 command line (and never `upgrade-native`); two Xcode tests generate and commit a project, run the
+  release check (passing and deliberately failing) and require `git status --porcelain` to stay empty and Copier's
+  update of the layer not to be refused.
+
 ## 0.1.0
 
 First release. The native iOS layer for `web-core-template` 0.7.x (`auth` + `native_client`).

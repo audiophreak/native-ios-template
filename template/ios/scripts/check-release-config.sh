@@ -5,9 +5,13 @@
 set -eu
 cd "$(dirname "$0")/.."
 SIM="$(sh scripts/simulator.sh)"
+# The build log lives in the ignored build area with the build products, so neither a passing nor a failing run
+# leaves a file git can see (an upgrade needs a clean tree). On failure its last lines are shown and its path named.
+LOG=".derived-data/release.log"
+mkdir -p .derived-data
 xcodebuild build -project App.xcodeproj -scheme App -configuration Release -destination "id=$SIM" \
-  -derivedDataPath .derived-data/release -onlyUsePackageVersionsFromResolvedFile CODE_SIGNING_ALLOWED=NO > .derived-data-release.log 2>&1 \
-  || { tail -30 .derived-data-release.log; exit 1; }
+  -derivedDataPath .derived-data/release -onlyUsePackageVersionsFromResolvedFile CODE_SIGNING_ALLOWED=NO > "$LOG" 2>&1 \
+  || { tail -30 "$LOG"; echo "The Release build failed; the full log is ios/$LOG" >&2; exit 1; }
 PLIST=".derived-data/release/Build/Products/Release-iphonesimulator/App.app/Info.plist"
 SCHEME="$(plutil -extract APIScheme raw -o - "$PLIST")"
 HOST="$(plutil -extract APIHost raw -o - "$PLIST")"
