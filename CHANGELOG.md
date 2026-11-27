@@ -2,6 +2,17 @@
 
 Versions are git tags (`vMAJOR.MINOR.PATCH`). In 0.x, a minor bump may be breaking.
 
+## Unreleased
+
+Repository changes for public distribution. Nothing under `template/` or `copier.yml` changes, so generated projects are
+byte-identical to 0.1.1.
+
+- Added `LICENSE` (MIT), `SECURITY.md` and `CONTRIBUTING.md`.
+- CI: `actions/checkout` and `astral-sh/setup-uv` are pinned to full commit SHAs (the commits `v4` and `v6` resolved
+  to: v4.4.0 and v6.8.0), like the other repositories.
+- `tests/test_render.py`: the personal-data check no longer names a person; it rejects Xcode's `Created by` author
+  header and the renderer's own `git config user.name`.
+
 ## 0.1.1
 
 Corrective patch. Two files change in generated projects (`ios/README.md`, `ios/scripts/check-release-config.sh`); the
