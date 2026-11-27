@@ -4,8 +4,11 @@ Versions are git tags (`vMAJOR.MINOR.PATCH`). In 0.x, a minor bump may be breaki
 
 ## Unreleased
 
-Repository changes for public distribution. Nothing under `template/` or `copier.yml` changes, so generated projects are
-byte-identical to 0.1.1.
+Repository changes for public distribution, and one fix in generated projects: `ios/scripts/check-release-config.sh`
+now prints the compiler `error:` lines before the tail of a failed Release build. With Xcode 26.6 the log ends in a
+long summary that pushed the error (and the failing file's name) out of the 30-line tail, which made
+`tests/test_xcode.py::test_a_failing_release_check_shows_the_build_error_and_still_leaves_the_tree_clean` fail in CI.
+Everything else in generated projects is byte-identical to 0.1.1.
 
 - Added `LICENSE` (MIT), `SECURITY.md` and `CONTRIBUTING.md`.
 - CI: `actions/checkout` and `astral-sh/setup-uv` are pinned to full commit SHAs (the commits `v4` and `v6` resolved
