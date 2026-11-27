@@ -96,7 +96,10 @@ def test_no_secret_credential_team_or_personal_path_is_rendered(rendered: Path) 
     text = {name: (rendered / name).read_text(errors="replace") for name in files(rendered) if not name.endswith(".png") and not name.endswith("check-static.sh")}
     joined = "\n".join(text.values())
     assert not re.search(r"gh[pousr]_[A-Za-z0-9]{20,}|github_pat_|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY", joined)
-    assert not re.search(r"/Users/|/home/[a-z]|McCauley|audiophreak", joined)
+    assert not re.search(r"/Users/|/home/[a-z]|audiophreak|^//\s*Created by ", joined, re.MULTILINE)  # Xcode's author header
+    # the identity of whoever renders the template (unset in CI) must never leak into the output
+    author = subprocess.run(["git", "config", "user.name"], capture_output=True, text=True).stdout.strip()
+    assert not author or author not in joined
     assert not re.search(r"DEVELOPMENT_TEAM *= *[A-Z0-9]{6,}", joined) and "DEVELOPMENT_TEAM" not in (rendered / "ios/App.xcodeproj/project.pbxproj").read_text()
     joined = "\n".join(v for k, v in text.items() if not k.endswith(".gitignore"))  # the ignore file names the signing material it excludes
     assert not re.search(r"\.mobileprovision|\.p12|CODE_SIGN_IDENTITY *= *[\"']?(iPhone|Apple) ", joined)

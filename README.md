@@ -48,3 +48,11 @@ minimum deployment target. See `docs/`.
 ## Releasing
 
 See `docs/maintaining.md`. Releases are annotated git tags on `main` after a pull request with passing CI.
+
+## Contributing, security and licence
+
+- [Contributing](CONTRIBUTING.md): development setup, ground rules and pull requests.
+- [Security policy](SECURITY.md): supported releases and how to report a vulnerability privately.
+- This template is licensed under the [MIT License](LICENSE). The Swift packages it uses are resolved at
+  build time under their own licences (all Apache-2.0, listed in `docs/dependencies.md`); none is vendored.
+  A generated project is your own code: the template adds no licence file to it.
